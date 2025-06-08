@@ -178,7 +178,7 @@ struct ItemCardView: View {
         if item.name == "Harison Hall" {
             return AnyView(LectureHallDetailsView())
         }
-        if item.name == "Study Area" {
+        if item.name == "Study Area" { 
             return AnyView(StudyAreaDetailView(item: item))
         }
         else {
