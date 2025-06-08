@@ -5,66 +5,56 @@ struct BottomNavigationBar: View {
     @State private var navigateToHome = false
     @State private var navigateToMap = false
     @State private var navigateToAnnouncements = false
-    @State private var showProfileSheet = false // ✅ State for profile sheet
+    @State private var showProfileSheet = false
 
     let icons = ["house.fill", "paperplane.fill", "speaker.wave.2.fill", "person.fill"]
 
     var body: some View {
-        HStack {
+        HStack(spacing: 40) {
             ForEach(0..<icons.count, id: \.self) { index in
-                Spacer()
-                BottomNavItem(icon: icons[index], isSelected: selectedTab == index)
-                    .onTapGesture {
-                        if index == 0 { navigateToHome = true }
-                        if index == 1 { navigateToMap = true }
-                        if index == 2 { navigateToAnnouncements = true }
-                        if index == 3 { showProfileSheet = true } // ✅ Open profile view
-                        selectedTab = index
+                VStack(spacing: 4) {
+                    Image(systemName: icons[index])
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .foregroundColor(selectedTab == index ? Color(hex: "#0066CC") : .gray)
+
+                    if selectedTab == index {
+                        Circle()
+                            .fill(Color(hex: "#003B95"))
+                            .frame(width: 6, height: 6)
+                    } else {
+                        Circle()
+                            .fill(Color.clear)
+                            .frame(width: 6, height: 6)
                     }
-                Spacer()
+                }
+                .frame(maxWidth: .infinity)
+                .onTapGesture {
+                    selectedTab = index
+                    if index == 0 { navigateToHome = true }
+                    if index == 1 { navigateToMap = true }
+                    if index == 2 { navigateToAnnouncements = true }
+                    if index == 3 { showProfileSheet = true }
+                }
             }
         }
-        .padding()
-        .background(Color.white.shadow(radius: 2))
+        .padding(.vertical, 12)
+        .padding(.horizontal, 24)
+        .background(Color(hex: "#D4E8FC"))
+        .cornerRadius(15)
+        .padding(.horizontal, 40)
+
         .background(
             Group {
-                NavigationLink(destination: HomeView(), isActive: $navigateToHome) {
-                    EmptyView()
-                }
-                .hidden()
-
-                NavigationLink(destination: NavigationMapView(), isActive: $navigateToMap) {
-                    EmptyView()
-                }
-                .hidden()
-
-                NavigationLink(destination: AnnouncementView(), isActive: $navigateToAnnouncements) {
-                    EmptyView()
-                }
-                .hidden()
+                NavigationLink(destination: HomeView(), isActive: $navigateToHome) { EmptyView() }.hidden()
+                NavigationLink(destination: NavigationMapView(), isActive: $navigateToMap) { EmptyView() }.hidden()
+                NavigationLink(destination: AnnouncementView(), isActive: $navigateToAnnouncements) { EmptyView() }.hidden()
             }
         )
-        .sheet(isPresented: $showProfileSheet) { // ✅ Show Profile Bottom Sheet
+        .sheet(isPresented: $showProfileSheet) {
             ProfileView()
-                .presentationDetents([.medium, .large]) // **iOS Standard**
+                .presentationDetents([.medium, .large])
         }
-    }
-}
-
-
-// MARK: - Bottom Navigation Item
-struct BottomNavItem: View {
-    let icon: String
-    let isSelected: Bool
-
-    var body: some View {
-        Image(systemName: icon)
-            .resizable()
-            .scaledToFit()
-            .frame(width: 24, height: 24)
-            .foregroundColor(isSelected ? .blue : .gray)
-            .padding(10)
-            .background(isSelected ? Color.blue.opacity(0.2) : Color.clear)
-            .clipShape(Circle())
     }
 }

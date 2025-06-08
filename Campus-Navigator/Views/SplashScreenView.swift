@@ -4,65 +4,66 @@ struct SplashScreenView: View {
     @State private var isActive = false
 
     var body: some View {
-        VStack(spacing: 0) {
-            // Top Pattern Graphic
-            Image("splashPattern") // Add your Figma wave graphic here
-                .resizable()
-                .scaledToFit()
-                .frame(height: 280)
-                .clipped()
+        NavigationStack {
+            VStack(spacing: 0) {
 
-            Spacer()
-            
-            VStack(alignment: .leading, spacing: 12) {
-                // Title with underline
-                Text("Campus Navigator")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .foregroundColor(Color.blue)
-                    .overlay(
-                        Rectangle()
-                            .frame(height: 2)
-                            .offset(y: 6),
-                        alignment: .bottom
-                    )
+                Image("Vector 3")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: .infinity)
+                    .ignoresSafeArea(edges: .top)
 
-                Text("Welcome")
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.black)
+                VStack(alignment: .leading, spacing: 20) {
 
-                Text("Lorem ipsum dolor sit amet consectetur.\nLorem id sit “Find Exact Location of your choice”")
-                    .font(.footnote)
-                    .foregroundColor(.gray)
-                    .lineLimit(2)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Campus Navigator")
+                            .font(.system(size: 28, weight: .bold))
+                            .foregroundColor(Color(red: 0.01, green: 0.22, blue: 0.46))
+
+                        Image("Line 22")
+                            .resizable()
+                            .frame(width: 160, height: 6)
+                    }
+
+                    Text("Welcome")
+                        .font(.system(size: 24, weight: .semibold))
+                        .foregroundColor(.black)
+
+                    Text("Lorem ipsum dolor sit amet consectetur.\nLorem id sit “Find Exact Location of your choice”")
+                        .font(.system(size: 16))
+                        .foregroundColor(.gray)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 24)
+                .padding(.top, 16)
+
+                Spacer()
 
                 HStack {
                     Spacer()
                     Button(action: {
                         isActive = true
                     }) {
-                        HStack(spacing: 5) {
+                        HStack(spacing: 6) {
                             Text("Continue")
-                            Image(systemName: "arrow.right")
+                                .font(.system(size: 16, weight: .medium))
+                                .foregroundColor(Color(red: 0.01, green: 0.22, blue: 0.46))
+
+                            Image("Group 13")
+                                .resizable()
+                                .frame(width: 32, height: 32)
                         }
-                        .padding(.vertical, 10)
-                        .padding(.horizontal, 20)
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(25)
                     }
+                    .padding(.bottom, 30)
+                    .padding(.trailing, 24)
                 }
-                .padding(.top, 10)
             }
-            .padding()
-            .background(Color.white)
-            .cornerRadius(30)
-            .shadow(radius: 5)
-        }
-        .ignoresSafeArea()
-        .fullScreenCover(isPresented: $isActive) {
-            LoginView()
+            .ignoresSafeArea()
+            .navigationDestination(isPresented: $isActive) {
+                LoginView().navigationBarBackButtonHidden(true)
+            }
         }
     }
 }
