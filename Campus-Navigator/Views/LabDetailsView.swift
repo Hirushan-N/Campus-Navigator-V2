@@ -1,165 +1,125 @@
 import SwiftUI
 
 struct LabDetailsView: View {
-    let name: String
-    let floor: String
-    let isReservationEnabled: Bool
-    @State private var selectedTab = 0
-    @State private var thumbsUpCount = 30
-    @State private var thumbsDownCount = 2
-    @State private var isThumbsUpSelected = false
-    @State private var isThumbsDownSelected = false
-    @State private var navigateToSeatReservation = false
-    @State private var navigateToMap = false
+    let item: Item
+    @State private var navigateToReserve = false
+    @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
-        VStack {
-            // Lab Image
-            Image("web_design_lab")
-                .resizable()
-                .scaledToFill()
-                .frame(height: 250)
-                .clipped()
-            
+        VStack(spacing: 0) {
+            ZStack(alignment: .topLeading) {
+                Image(item.image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: UIScreen.main.bounds.width - 32, height: 500)
+                    .clipped()
+                    .cornerRadius(20)
+                    .padding(.horizontal)
+                    .padding(.top, 60)
+
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color(hex: "#002D72"))
+                        .cornerRadius(12)
+                        .padding(.leading, 32)
+                        .padding(.top, 70)
+                }
+            }
+
             VStack(alignment: .leading, spacing: 12) {
-                // Lab Name & Navigate Button
-                HStack {
-                    Text(name)
-                        .font(.title)
-                        .fontWeight(.bold)
+                HStack(alignment: .top) {
+                    Text(item.name)
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .foregroundColor(Color(hex: "#002D72"))
 
                     Spacer()
-                    
+
+                    HStack(spacing: 12) {
+                        Image("wifi 1").resizable().frame(width: 16, height: 16)
+                        Image("freezing 1").resizable().frame(width: 16, height: 16)
+                        Image("power-plug 1").resizable().frame(width: 16, height: 16)
+                    }
+                }
+
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Group {
+                            Text("Accommodation: ")
+                                .fontWeight(.semibold) +
+                            Text("5–15 people")
+                        }
+                        .font(.subheadline)
+
+                        Group {
+                            Text("Floor: ")
+                                .fontWeight(.semibold) +
+                            Text(item.floor)
+                        }
+                        .font(.subheadline)
+
+                        Group {
+                            Text("Type: ")
+                                .fontWeight(.semibold) +
+                            Text("Labs")
+                        }
+                        .font(.subheadline)
+                    }
+
+                    Spacer()
+
                     Button(action: {
-                        navigateToMap = true // Trigger navigation
+                        NavigationMapView()
                     }) {
-                        VStack {
-                            Image(systemName: "location.fill")
-                                .font(.title)
-                                .foregroundColor(.blue)
+                        VStack(spacing: 4) {
+                            Image("navigateicon")
+                                .resizable()
+                                .frame(width: 50, height: 50)
                         }
                     }
                 }
-                
-                // Location & Type
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("**Location**")
-                    Text("\(floor) Floor")
-                        .font(.headline)
 
-                    Text("**Type**")
-                    Text("Lab Practical Session")
-                        .font(.headline)
-                }
+                Text("The iOS Lab is a dedicated workspace for students to develop and test iOS tools like Xcode.")
+                    .font(.footnote)
+                    .foregroundColor(.gray)
+                    .padding(.top, 4)
 
-                // Operating Hours
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("**Operating Hours**")
+                Button(action: {
+                    navigateToReserve = true
+                }) {
                     HStack {
-                        Text("• Monday – Friday:")
-                        Text("**8:00 AM – 4:00 PM**")
+                        Spacer()
+                        Text("Reserve Lab Seat")
+                            .foregroundColor(.white)
+                        Image("arrow-white")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                        Spacer()
                     }
-                    HStack {
-                        Text("• Saturday – Sunday:")
-                        Text("**9:00 AM – 5:00 PM**")
-                    }
+                    .padding()
+                    .background(Color(hex: "#002D72"))
+                    .cornerRadius(10)
                 }
+                .padding(.top, 12)
 
-                // Rating Section with Voting
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Low")
-                        .font(.footnote)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.blue)
-                    
-                    HStack {
-                        ProgressView(value: 0.34)
-                            .progressViewStyle(LinearProgressViewStyle(tint: Color.green))
-                            .frame(maxWidth: .infinity)
-                        
-                        Text("34%")
-                            .font(.footnote)
-                            .fontWeight(.bold)
-                            .foregroundColor(.green)
-                    }
-                    
-                    HStack {
-                        Button(action: {
-                            if !isThumbsUpSelected {
-                                thumbsUpCount += 1
-                                isThumbsUpSelected = true
-                                if isThumbsDownSelected {
-                                    thumbsDownCount -= 1
-                                    isThumbsDownSelected = false
-                                }
-                            }
-                        }) {
-                            HStack {
-                                Image(systemName: "hand.thumbsup.fill")
-                                    .foregroundColor(isThumbsUpSelected ? .blue : .gray)
-                                Text("\(thumbsUpCount)")
-                            }
-                        }
-
-                        Button(action: {
-                            if !isThumbsDownSelected {
-                                thumbsDownCount += 1
-                                isThumbsDownSelected = true
-                                if isThumbsUpSelected {
-                                    thumbsUpCount -= 1
-                                    isThumbsUpSelected = false
-                                }
-                            }
-                        }) {
-                            HStack {
-                                Image(systemName: "hand.thumbsdown.fill")
-                                    .foregroundColor(isThumbsDownSelected ? .red : .gray)
-                                Text("\(thumbsDownCount)")
-                            }
-                        }
-                    }
+                NavigationLink(destination: ReserveSeatView(), isActive: $navigateToReserve) {
+                    EmptyView()
                 }
-            }
-            .padding()
-
-            Spacer()
-            
-            NavigationLink(destination: NavigationMapView(), isActive: $navigateToMap) {
-                EmptyView()
-            }
-            .hidden()
-
-            NavigationLink(destination: SeatReservationView(), isActive: $navigateToSeatReservation) {
-                EmptyView()
-            }
-            .hidden()
-
-            // Reserve Seat Button
-            Button(action: {
-                if isReservationEnabled {
-                    navigateToSeatReservation = true
-                }
-            }) {
-                HStack {
-                    Text("Reserve Seat")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                    
-                    Image(systemName: "arrow.right.circle.fill")
-                        .foregroundColor(.white)
-                }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(isReservationEnabled ? Color.blue : Color.gray)
-                .cornerRadius(10)
+                .hidden()
             }
             .padding(.horizontal)
-            .disabled(!isReservationEnabled)
-            
-            Spacer().frame(height: 15)
-            // Bottom Navigation Bar
-            BottomNavigationBar(selectedTab: $selectedTab)
+            .padding(.top, 12)
+
+            Spacer()
+
+            BottomNavigationBar(selectedTab: .constant(0))
         }
-        .edgesIgnoringSafeArea(.bottom)
+        .edgesIgnoringSafeArea(.top)
+        .navigationBarHidden(true)
     }
 }
