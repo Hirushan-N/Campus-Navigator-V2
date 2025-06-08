@@ -75,9 +75,7 @@ struct CafeArenaView: View {
                                 .font(.subheadline)
                                 .fontWeight(.semibold)
                                 .foregroundColor(.black)
-                            Text("The Cafe Lago offers a variety of
-fresh and affordable meals, snacks, and beverages for students and
-staff.")
+                            Text("The Cafe Lago offers a variety of fresh and affordable meals, snacks, and beverages for students and staff.")
                                 .font(.subheadline)
                                 .foregroundColor(.black.opacity(0.85))
                                 .padding(.bottom, 4)
